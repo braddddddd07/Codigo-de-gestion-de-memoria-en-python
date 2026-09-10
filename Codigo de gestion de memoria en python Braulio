@@ -1,0 +1,48 @@
+import sys
+
+
+class Persona:
+
+  def __init__(self, nombre: str, edad: int):
+    self.nombre = nombre  # Atributo almacenado dentro de la instancia en el Heap
+    self.edad = edad
+
+
+def funcion_secundaria():
+  # 1. Variables locales en el Stack (pila de ejecución de esta función)
+  x = 10
+  y = 20
+  suma = x + y
+
+  # 2. Creación de un objeto en el Heap
+  # 'p1' guarda la referencia (puntero) en el Stack hacia el objeto en el Heap
+  p1 = Persona("Carlos", 25)
+
+  print("=== DENTRO DE FUNCION_SECUNDARIA ===")
+  print(f"Variable local suma (Stack): {suma}")
+  print(
+      f"Objeto p1 -> Nombre: {p1.nombre}, Edad: {p1.edad}"
+  )  # Atributos en Heap
+  print(
+      f"Dirección de memoria de p1 (Heap): {hex(id(p1))}"
+  )  # Equivale al puntero en Java
+  print(f"Conteo de referencias de p1: {sys.getrefcount(p1) - 1}\n")
+
+
+def funcion_principal():
+  print("=== INICIO DE FUNCION_PRINCIPAL ===")
+
+  # Llamada a la función: se crea un marco de pila (Stack Frame)
+  funcion_secundaria()
+
+  # Al salir de 'funcion_secundaria', su marco de pila se destruye (Stack clearing).
+  # El objeto Persona deja de tener referencias y el Garbage Collector de Python libera la memoria del Heap.
+
+  print("=== DE VUELTA EN FUNCION_PRINCIPAL ===")
+  print(
+      "La función secundaria finalizó; su marco en el Stack fue liberado."
+  )
+
+
+if __name__ == "__main__":
+  funcion_principal()
